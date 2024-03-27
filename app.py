@@ -36,7 +36,11 @@ class Components(ttk.Frame):
         self.passage = tk.StringVar()
         self.passage.set(self.poke_data["description"])
 
+        self.timer = tk.StringVar()
+
         self.create_widgets()
+
+        self.countdown(t=15)
 
         self.text_input.bind("<KeyRelease>", self.compare_text)
 
@@ -52,7 +56,9 @@ class Components(ttk.Frame):
         self.heading_label.grid(row=0, column=0)
 
         # timer
-        self.timer_label = ttk.Label(self, text="timer", font=("Arial", 16, "bold"))
+        self.timer_label = ttk.Label(
+            self, textvariable=self.timer, font=("Arial", 16, "bold")
+        )
         self.timer_label.grid(row=0, column=2)
 
         # passage
@@ -60,7 +66,7 @@ class Components(ttk.Frame):
             self,
             textvariable=self.passage,
             font=("Arial", 14),
-            wraplength=400,
+            wraplength=450,
         )
         self.passage_label.grid(row=1, column=0, columnspan=3)
 
@@ -75,6 +81,11 @@ class Components(ttk.Frame):
             self.text_input.configure(foreground="green")
         else:
             self.text_input.configure(foreground="red")
-
-        if self.current_text == self.passage:
+        if self.current_text == self.passage.get():
             self.master.quit()
+
+    def countdown(self, t: int) -> None:
+        if t >= 0:
+            min, sec = divmod(t, 60)
+            self.timer.set(f"{min:02d}:{sec:02d}")
+            self.after(1000, self.countdown, t - 1)
