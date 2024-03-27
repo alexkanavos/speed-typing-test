@@ -1,2 +1,5 @@
+from app import TypingSpeedTest
+
+
 if __name__ == "__main__":
-    pass
+    app = TypingSpeedTest(size=(600, 400))
