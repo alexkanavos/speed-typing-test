@@ -13,10 +13,13 @@ class TypingSpeedTest(tk.Tk):
         self.minsize(size[0], size[1])
         self.columnconfigure((0), weight=1, uniform="a")
         self.rowconfigure((0), weight=1, uniform="a")
+        self.begin()
 
+    def begin(self):
+        for widget in self.winfo_children():
+            widget.destroy()
         self.components = Components(self)
         self.components.grid(row=0, column=0)
-
         self.mainloop()
 
 
@@ -33,7 +36,7 @@ class Components(ttk.Frame):
         self.wpm = 0
 
         self.columnconfigure((0, 1, 2), weight=1, uniform="a")
-        self.rowconfigure((0, 1, 2), weight=1, uniform="a")
+        self.rowconfigure((0, 1, 2, 3, 4), weight=1, uniform="a")
 
         self.poke_data = pokeapi()
 
@@ -62,13 +65,13 @@ class Components(ttk.Frame):
             font=("Arial", 16, "bold"),
             foreground=self.poke_data["color"],
         )
-        self.heading_label.grid(row=0, column=0)
+        self.heading_label.grid(row=1, column=0)
 
         # timer
         self.timer_label = ttk.Label(
             self, textvariable=self.timer, font=("Arial", 16, "bold")
         )
-        self.timer_label.grid(row=0, column=2)
+        self.timer_label.grid(row=1, column=2)
 
         # passage
         self.passage_label = ttk.Label(
@@ -77,12 +80,12 @@ class Components(ttk.Frame):
             font=("Arial", 14),
             wraplength=450,
         )
-        self.passage_label.grid(row=1, column=0, columnspan=3)
+        self.passage_label.grid(row=2, column=0, columnspan=3)
 
         # textbox
         self.text_input = tk.Text(self, font=("Arial", 14))
         self.text_input.focus()
-        self.text_input.grid(row=2, column=0, columnspan=3, padx=50, pady=20)
+        self.text_input.grid(row=3, column=0, columnspan=3, padx=40, pady=10)
 
     def compare_text(self, event) -> None:
         current_text = self.text_input.get("1.0", "end-1c")
@@ -120,13 +123,13 @@ class Components(ttk.Frame):
         self.accuracy_label = ttk.Label(
             self, text=f"Accuracy: {int(self.accuracy)}%", font=("Arial", 16, "bold")
         )
-        self.accuracy_label.grid(row=0, column=1)
+        self.accuracy_label.grid(row=1, column=1)
 
         # wpm
         self.wpm_label = ttk.Label(
             self, text=f"Wpm: {self.wpm}", font=("Arial", 16, "bold")
         )
-        self.wpm_label.grid(row=1, column=1)
+        self.wpm_label.grid(row=2, column=1)
 
         # total time
         self.total_time_label = ttk.Label(
@@ -134,7 +137,11 @@ class Components(ttk.Frame):
             text=f"Total time: {self.total_time}",
             font=("Arial", 16, "bold"),
         )
-        self.total_time_label.grid(row=2, column=1)
+        self.total_time_label.grid(row=3, column=1)
+
+        # restart button
+        self.restart_button = ttk.Button(text="Restart", command=self.master.begin)
+        self.restart_button.grid(row=4, column=0, pady=40)
 
     def average_chars_per_word(self) -> float:
         words_list = self.passage.get().split()
